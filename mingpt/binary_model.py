@@ -141,9 +141,9 @@ class Block(nn.Module):
         self.attn = CausalSelfAttention(config)
         self.mlp = nn.Sequential(
             BinaryLinear(config.n_embd, 4 * config.n_embd),
-            BinaryTanh(),
+            nn.GELU(),
             BinaryLinear(4 * config.n_embd, config.n_embd),
-            #nn.Dropout(config.resid_pdrop),
+            nn.Dropout(config.resid_pdrop),
         )
 
     def forward(self, x):
@@ -195,7 +195,7 @@ class GPT(nn.Module):
         # separate out all parameters to those that will and won't experience regularizing weight decay
         decay = set()
         no_decay = set()
-        whitelist_weight_modules = (torch.nn.Linear, )
+        whitelist_weight_modules = (nn.Linear, )
         blacklist_weight_modules = (torch.nn.LayerNorm, torch.nn.Embedding)
         for mn, m in self.named_modules():
             for pn, p in m.named_parameters():

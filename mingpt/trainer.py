@@ -47,8 +47,8 @@ class Trainer:
         # take over whatever gpus are on the system
         self.device = 'cpu'
         if torch.cuda.is_available():
-            self.device = torch.cuda.current_device()
-            self.model = torch.nn.DataParallel(self.model).to(self.device)
+            self.device = 'cuda:0'
+            self.model = self.model.to(self.device)
 
     def save_checkpoint(self):
         # DataParallel wrappers keep raw model object in .module attribute
@@ -128,3 +128,4 @@ class Trainer:
             if self.config.ckpt_path is not None and good_model:
                 best_loss = test_loss
                 self.save_checkpoint()
+        np.save('binarylosses.npy',np.array(losses))
